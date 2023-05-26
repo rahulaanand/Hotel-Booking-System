@@ -48,8 +48,7 @@ internal class Program
         });
 
         //Context
-        builder.Services.AddDbContext<HotelBookingContext>(Opt => Opt.UseSqlServer(builder.Configuration.GetConnectionString("HotelBooking" +
-            "")));
+        builder.Services.AddDbContext<HotelBookingContext>(Opt => Opt.UseSqlServer(builder.Configuration.GetConnectionString("HotelBooking")));
 
         //Json
         builder.Services.AddControllers().AddNewtonsoftJson(options =>
@@ -95,6 +94,7 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
+
         app.UseAuthentication();
         app.UseAuthorization();
 

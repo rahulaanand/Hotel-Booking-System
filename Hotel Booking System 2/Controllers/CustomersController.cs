@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Booking_System_2.Db;
 using Hotel_Booking_System_2.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hotel_Booking_System_2.Controllers
 {
@@ -21,6 +22,7 @@ namespace Hotel_Booking_System_2.Controllers
             _context = context;
         }
 
+        [Authorize]
         // GET: api/Customers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customers>>> GetCustomers()
@@ -50,6 +52,7 @@ namespace Hotel_Booking_System_2.Controllers
             return customers;
         }
 
+        [Authorize]
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -96,6 +99,7 @@ namespace Hotel_Booking_System_2.Controllers
             return CreatedAtAction("GetCustomers", new { id = customers.CustomerId }, customers);
         }
 
+        [Authorize]
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomers(int id)

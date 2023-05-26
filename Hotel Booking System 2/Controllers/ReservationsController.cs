@@ -29,7 +29,10 @@ namespace Hotel_Booking_System_2.Controllers
           {
               return NotFound();
           }
-            return await _context.Reservations.ToListAsync();
+            return await _context.Reservations
+                .Include(x => x.Customer)
+                .Include(x => x.Hotels)
+                .ToListAsync();
         }
 
         // GET: api/Reservations/5

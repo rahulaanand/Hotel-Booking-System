@@ -17,12 +17,12 @@ namespace Hotel_Booking_System_2.Repo
 
         public IEnumerable<Hotels> GetAllHotels()
         {
-            return _context.Hotels.ToList();
+            return _context.Hotels.Include(x=>x.Rooms).ToList();
         }
 
         public Hotels GetHotelById(int hotelId)
         {
-            return _context.Hotels.Find(hotelId);
+            return _context.Hotels.FirstOrDefault(x => x.HotelId == hotelId);
         }
 
         public void AddHotel(Hotels hotel)
