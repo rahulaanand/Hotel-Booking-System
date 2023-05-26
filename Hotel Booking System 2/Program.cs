@@ -1,3 +1,4 @@
+using APIcodefirst.Repository;
 using Hotel_Booking_System_2.Db;
 using Hotel_Booking_System_2.Models;
 using Hotel_Booking_System_2.Repo;
@@ -47,7 +48,8 @@ internal class Program
         });
 
         //Context
-        builder.Services.AddDbContext<HotelBookingContext>(Opt => Opt.UseSqlServer(builder.Configuration.GetConnectionString("HotelBooking")));
+        builder.Services.AddDbContext<HotelBookingContext>(Opt => Opt.UseSqlServer(builder.Configuration.GetConnectionString("HotelBooking" +
+            "")));
 
         //Json
         builder.Services.AddControllers().AddNewtonsoftJson(options =>
@@ -58,6 +60,7 @@ internal class Program
 
         //DependencyInjection
         builder.Services.AddScoped<IHotelRepository, HotelRepository>();
+        builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 
         // Adding Authentication
         builder.Services.AddAuthentication(options =>

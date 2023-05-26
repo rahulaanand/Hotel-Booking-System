@@ -12,26 +12,27 @@ namespace Hotel_Booking_System_2.Controllers
     [ApiController]
     public class HotelsController : ControllerBase
     {
-        private readonly IHotelRepository _hotelRepository;
+        private readonly IHotelRepository _context;
 
         public HotelsController(IHotelRepository hotelRepository)
         {
-            _hotelRepository = hotelRepository;
+            _context = hotelRepository;
         }
 
         // GET: api/Hotels
         [HttpGet]
         public ActionResult<IEnumerable<Hotels>> GetHotels()
         {
-            var hotels = _hotelRepository.GetAllHotels();
+            var hotels = _context.GetAllHotels();
             return Ok(hotels);
+
         }
 
         // GET: api/Hotels/5
         [HttpGet("{id}")]
         public ActionResult<Hotels> GetHotel(int id)
         {
-            var hotel = _hotelRepository.GetHotelById(id);
+            var hotel = _context.GetHotelById(id);
             if (hotel == null)
             {
                 return NotFound();
@@ -45,7 +46,7 @@ namespace Hotel_Booking_System_2.Controllers
         {
             try
             {
-                _hotelRepository.AddHotel(hotel);
+                _context.AddHotel(hotel);
                 return CreatedAtAction(nameof(GetHotel), new { id = hotel.HotelId }, hotel);
             }
             catch (Exception ex)
@@ -65,7 +66,7 @@ namespace Hotel_Booking_System_2.Controllers
 
             try
             {
-                _hotelRepository.UpdateHotel(hotel);
+                _context.UpdateHotel(hotel);
                 return NoContent();
             }
             catch (Exception ex)
@@ -78,7 +79,7 @@ namespace Hotel_Booking_System_2.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteHotel(int id)
         {
-            var hotel = _hotelRepository.GetHotelById(id);
+            var hotel = _context.GetHotelById(id);
             if (hotel == null)
             {
                 return NotFound();
@@ -86,8 +87,68 @@ namespace Hotel_Booking_System_2.Controllers
 
             try
             {
-                _hotelRepository.DeleteHotel(id);
+                _context.DeleteHotel(id);
                 return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //Filtering location
+        [HttpGet("/filter/location")]
+        public ActionResult<IEnumerable<Hotels>> GetLocation(string location)
+        {
+            try
+            {
+                var hotels = _context.GetLocation(location);
+                return Ok(hotels);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //Count function with ony their Availability 
+        [HttpGet("/count")]
+        public ActionResult<int> GetAvailableRoom(string hotelname)
+        {
+            try
+            {
+                int availableSeats = _context.GetAvailableRoomCount(hotelname);
+                return Ok(availableSeats);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //Filtering according to their Price
+        [HttpGet("/filter/price")]
+        public ActionResult<IEnumerable<Hotels>> GetPrice(int price)
+        {
+            try
+            {
+                var hotels = _context.GetPrice(price);
+                return Ok(hotels);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //Filtering their Amenities
+        [HttpGet("/filter/amenities")]
+        public ActionResult<IEnumerable<Hotels>> GetAmenities(string amenities)
+        {
+            try
+            {
+                var hotels = _context.GetAmenities(amenities);
+                return Ok(hotels);
             }
             catch (Exception ex)
             {

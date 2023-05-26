@@ -10,5 +10,11 @@ namespace Hotel_Booking_System_2.Repo
         void AddHotel(Hotels hotel);
         void UpdateHotel(Hotels hotel);
         void DeleteHotel(int hotelId);
+        IEnumerable<Hotels> GetLocation(string location);
+        int GetAvailableRoomCount(string hotelname);
+        IEnumerable<Hotels> GetAmenities(string amenities);
+        IEnumerable<Hotels> GetPrice(int price);
+
+
     }
 }
