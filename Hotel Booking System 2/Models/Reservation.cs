@@ -7,10 +7,9 @@ namespace Hotel_Booking_System_2.Models
         [Key]
         public int ReservationId { get; set; }
         public int CustomerId { get; set; }
-        public int RoomId { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
         public Customers Customer { get; set; }
-        public Rooms Room { get; set; }
+        public Hotels Hotels{ get; set; }
     }
 }

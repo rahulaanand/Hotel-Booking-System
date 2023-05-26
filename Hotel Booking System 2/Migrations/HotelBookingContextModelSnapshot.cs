@@ -33,6 +33,9 @@ namespace Hotel_Booking_System_2.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("HotelsHotelId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -41,6 +44,8 @@ namespace Hotel_Booking_System_2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CustomerId");
+
+                    b.HasIndex("HotelsHotelId");
 
                     b.ToTable("Customers");
                 });
@@ -57,10 +62,6 @@ namespace Hotel_Booking_System_2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HotelDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("HotelLocation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -71,6 +72,9 @@ namespace Hotel_Booking_System_2.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("RoomAvailability")
+                        .HasColumnType("int");
 
                     b.HasKey("HotelId");
 
@@ -94,14 +98,14 @@ namespace Hotel_Booking_System_2.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RoomId")
+                    b.Property<int>("HotelsHotelId")
                         .HasColumnType("int");
 
                     b.HasKey("ReservationId");
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("RoomId");
+                    b.HasIndex("HotelsHotelId");
 
                     b.ToTable("Reservations");
                 });
@@ -116,9 +120,6 @@ namespace Hotel_Booking_System_2.Migrations
 
                     b.Property<int>("HotelId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("RoomAvailability")
-                        .HasColumnType("bit");
 
                     b.Property<string>("RoomType")
                         .IsRequired()
@@ -142,9 +143,6 @@ namespace Hotel_Booking_System_2.Migrations
                     b.Property<int?>("HotelId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RoomsRoomId")
-                        .HasColumnType("int");
-
                     b.Property<string>("StaffName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -153,9 +151,16 @@ namespace Hotel_Booking_System_2.Migrations
 
                     b.HasIndex("HotelId");
 
-                    b.HasIndex("RoomsRoomId");
-
                     b.ToTable("Staffs");
+                });
+
+            modelBuilder.Entity("Hotel_Booking_System_2.Models.Customers", b =>
+                {
+                    b.HasOne("Hotel_Booking_System_2.Models.Hotels", "Hotels")
+                        .WithMany()
+                        .HasForeignKey("HotelsHotelId");
+
+                    b.Navigation("Hotels");
                 });
 
             modelBuilder.Entity("Hotel_Booking_System_2.Models.Reservation", b =>
@@ -166,15 +171,15 @@ namespace Hotel_Booking_System_2.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Hotel_Booking_System_2.Models.Rooms", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
+                    b.HasOne("Hotel_Booking_System_2.Models.Hotels", "Hotels")
+                        .WithMany("Reservations")
+                        .HasForeignKey("HotelsHotelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
 
-                    b.Navigation("Room");
+                    b.Navigation("Hotels");
                 });
 
             modelBuilder.Entity("Hotel_Booking_System_2.Models.Rooms", b =>
@@ -191,12 +196,8 @@ namespace Hotel_Booking_System_2.Migrations
             modelBuilder.Entity("Hotel_Booking_System_2.Models.Staffs", b =>
                 {
                     b.HasOne("Hotel_Booking_System_2.Models.Hotels", "Hotel")
-                        .WithMany()
+                        .WithMany("Staff")
                         .HasForeignKey("HotelId");
-
-                    b.HasOne("Hotel_Booking_System_2.Models.Rooms", null)
-                        .WithMany("Staffs")
-                        .HasForeignKey("RoomsRoomId");
 
                     b.Navigation("Hotel");
                 });
@@ -208,12 +209,11 @@ namespace Hotel_Booking_System_2.Migrations
 
             modelBuilder.Entity("Hotel_Booking_System_2.Models.Hotels", b =>
                 {
-                    b.Navigation("Rooms");
-                });
+                    b.Navigation("Reservations");
 
-            modelBuilder.Entity("Hotel_Booking_System_2.Models.Rooms", b =>
-                {
-                    b.Navigation("Staffs");
+                    b.Navigation("Rooms");
+
+                    b.Navigation("Staff");
                 });
 #pragma warning restore 612, 618
         }
