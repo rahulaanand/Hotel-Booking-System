@@ -1,5 +1,6 @@
 ﻿using Hotel_Booking_System_2.Models;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
+
 namespace Hotel_Booking_System_2.Db
 {
     public class HotelBookingContext : DbContext
@@ -15,5 +16,9 @@ namespace Hotel_Booking_System_2.Db
         {
 
         }
+
+        public DbSet<Hotel_Booking_System_2.Models.Staffs>? Staffs { get; set; }
+
+        public DbSet<Hotel_Booking_System_2.Models.Customers>? Customers { get; set; }
     }
 }

@@ -33,9 +33,6 @@ namespace Hotel_Booking_System_2.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("HotelsHotelId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -44,8 +41,6 @@ namespace Hotel_Booking_System_2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CustomerId");
-
-                    b.HasIndex("HotelsHotelId");
 
                     b.ToTable("Customers");
                 });
@@ -152,15 +147,6 @@ namespace Hotel_Booking_System_2.Migrations
                     b.HasIndex("HotelId");
 
                     b.ToTable("Staffs");
-                });
-
-            modelBuilder.Entity("Hotel_Booking_System_2.Models.Customers", b =>
-                {
-                    b.HasOne("Hotel_Booking_System_2.Models.Hotels", "Hotels")
-                        .WithMany()
-                        .HasForeignKey("HotelsHotelId");
-
-                    b.Navigation("Hotels");
                 });
 
             modelBuilder.Entity("Hotel_Booking_System_2.Models.Reservation", b =>
