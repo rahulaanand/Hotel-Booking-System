@@ -83,7 +83,7 @@ namespace SampOnetoManyAPI.Controllers
         {
             if (staffData != null && !string.IsNullOrEmpty(staffData.StaffName) && !string.IsNullOrEmpty(staffData.StaffPassword))
             {
-                var staff = await GetStaff(staffData.StaffId, staffData.StaffName, staffData.StaffPassword);
+                var staff = await GetStaff(staffData.StaffName, staffData.StaffPassword);
 
                 if (staff != null)
                 {
@@ -120,9 +120,9 @@ namespace SampOnetoManyAPI.Controllers
             }
         }
 
-        private async Task<Staffs> GetStaff(int HotelId, string staffName, string staffPassword)
+        private async Task<Staffs> GetStaff(string staffName, string staffPassword)
         {
-            return await _context.Staffs.FirstOrDefaultAsync(s => s.HotelId == HotelId && s.StaffName == staffName && s.StaffPassword == staffPassword);
+            return await _context.Staffs.FirstOrDefaultAsync(s => s.StaffName == staffName && s.StaffPassword == staffPassword);
         }
 
     }
