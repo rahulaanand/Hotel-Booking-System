@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Booking_System_2.Db;
 using Hotel_Booking_System_2.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hotel_Booking_System_2.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ReservationsController : ControllerBase
@@ -30,7 +32,6 @@ namespace Hotel_Booking_System_2.Controllers
               return NotFound();
           }
             return await _context.Reservations
-                .Include(x => x.Customer)
                 .Include(x => x.Hotels)
                 .ToListAsync();
         }

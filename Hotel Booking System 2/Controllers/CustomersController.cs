@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Hotel_Booking_System_2.Db;
 using Hotel_Booking_System_2.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Text;
+using System.Security.Cryptography;
+
 
 namespace Hotel_Booking_System_2.Controllers
 {
@@ -22,18 +25,24 @@ namespace Hotel_Booking_System_2.Controllers
             _context = context;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Staff")]
         // GET: api/Customers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customers>>> GetCustomers()
         {
-          if (_context.Customers == null)
-          {
-              return NotFound();
-          }
-            return await _context.Customers.ToListAsync();
+            var customers = await _context.Customers.ToListAsync();
+            var GetCustomer = customers.Select(c => new Customers
+            {
+                CustomerId = c.CustomerId,
+                Username = c.Username,
+                Email = c.Email,
+                Password = HashPassword(c.Password)
+            }).ToList();
+
+            return GetCustomer;
         }
 
+        [Authorize(Roles = "Customer,Staff")]
         // GET: api/Customers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Customers>> GetCustomers(int id)
@@ -52,7 +61,7 @@ namespace Hotel_Booking_System_2.Controllers
             return customers;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -99,7 +108,7 @@ namespace Hotel_Booking_System_2.Controllers
             return CreatedAtAction("GetCustomers", new { id = customers.CustomerId }, customers);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomers(int id)
@@ -118,6 +127,17 @@ namespace Hotel_Booking_System_2.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private string HashPassword(string password)
+        {
+            // Implement password hashing logic or any other modification you require
+            // Example: Hash the password using SHA256
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return Convert.ToBase64String(hashedBytes);
+            }
         }
 
         private bool CustomersExists(int id)

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Hotel_Booking_System_2.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Staff,Customer")]
     [Route("api/[controller]")]
     [ApiController]
     public class HotelsController : ControllerBase
@@ -155,5 +155,21 @@ namespace Hotel_Booking_System_2.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        //Filtering all together
+        [HttpGet("/filter")]
+        public ActionResult<IEnumerable<Hotels>> Filter(string location, int price, string amenities)
+        {
+            try
+            {
+                var filteredHotels = _context.FilterHotels(location, price, amenities);
+                return Ok(filteredHotels);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

@@ -46,10 +46,12 @@ namespace Hotel_Booking_System_2.Repo
                 _context.SaveChanges();
             }
         }
+
         public IEnumerable<Hotels> GetLocation(string location)
         {
             return _context.Hotels.Where(e => e.HotelLocation == location).ToList();
         }
+
         public int GetAvailableRoomCount(string hotelname)
         {
             var hotel = _context.Hotels.Include(f => f.Reservations).FirstOrDefault(f => f.HotelName == hotelname);
@@ -62,8 +64,8 @@ namespace Hotel_Booking_System_2.Repo
             int availableRooms = totalRooms - bookedRooms;
 
             return availableRooms >= 0 ? availableRooms : 0;
-
         }
+
         public IEnumerable<Hotels> GetPrice(int price)
         {
             return _context.Hotels.Where(e => e.Price <= price).ToList();
@@ -74,5 +76,28 @@ namespace Hotel_Booking_System_2.Repo
             return _context.Hotels.Where(e => e.Amenities == amenities).ToList();
         }
 
+        public IEnumerable<Hotels> FilterHotels(string location, int price, string amenities)
+        {
+            var filteredHotels = _context.Hotels.ToList();
+
+            if (!string.IsNullOrEmpty(location))
+            {
+                filteredHotels = filteredHotels.Where(h => h.HotelLocation.ToLower() == location.ToLower()).ToList();
+            }
+
+            if (price > 0)
+            {
+                filteredHotels = filteredHotels.Where(h => h.Price <= price).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(amenities))
+            {
+                var amenitiesList = amenities.Split(',').Select(a => a.Trim().ToLower()).ToList();
+                filteredHotels = filteredHotels.Where(h => amenitiesList.All(a => h.Amenities.ToLower().Contains(a))).ToList();
+            }
+
+            return filteredHotels;
+        }
     }
 }
+

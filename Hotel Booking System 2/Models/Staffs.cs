@@ -6,8 +6,9 @@ namespace Hotel_Booking_System_2.Models
     {
         [Key]
         public int StaffId { get; set; }
-        public string StaffName { get; set; }
+        public string? StaffName { get; set; }
+        public string? StaffPassword { get; set; }  
         public int? HotelId { get; set; }
-        public Hotels Hotel { get; set; }
+        public Hotels? Hotel { get; set; }
     }
 }

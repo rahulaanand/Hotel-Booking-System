@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Booking_System_2.Db;
 using Hotel_Booking_System_2.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Hotel_Booking_System_2.Controllers
 {
@@ -21,17 +25,23 @@ namespace Hotel_Booking_System_2.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Staff")]
         // GET: api/Staffs
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Staffs>>> GetStaffs()
         {
-          if (_context.Staffs == null)
-          {
-              return NotFound();
-          }
-            return await _context.Staffs.ToListAsync();
+            var staffs = await _context.Staffs.ToListAsync();
+            var GetStaff = staffs.Select(s => new Staffs
+            {
+                StaffId = s.StaffId,
+                StaffName = s.StaffName,
+                StaffPassword = HashPassword(s.StaffPassword),
+                HotelId = s.HotelId
+            }).ToList();
+            return GetStaff;
         }
 
+        [Authorize(Roles = "Staff")]
         // GET: api/Staffs/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Staffs>> GetStaffs(int id)
@@ -50,6 +60,7 @@ namespace Hotel_Booking_System_2.Controllers
             return staffs;
         }
 
+        [Authorize(Roles = "Staff")]
         // PUT: api/Staffs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -96,6 +107,7 @@ namespace Hotel_Booking_System_2.Controllers
             return CreatedAtAction("GetStaffs", new { id = staffs.StaffId }, staffs);
         }
 
+        [Authorize(Roles = "Staff")]
         // DELETE: api/Staffs/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStaffs(int id)
@@ -114,6 +126,17 @@ namespace Hotel_Booking_System_2.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private string HashPassword(string password)
+        {
+            // Implement password hashing logic or any other modification you require
+            // Example: Hash the password using SHA256
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return Convert.ToBase64String(hashedBytes);
+            }
         }
 
         private bool StaffsExists(int id)

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 namespace Hotel_Booking_System_2.Controllers
 {
+    [Authorize(Roles = "Staff")]
     [Route("api/[controller]")]
     [ApiController]
     public class RoomController : ControllerBase
